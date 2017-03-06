@@ -66,25 +66,31 @@ Theta2_grad = zeros(size(Theta2));
 %
 
 X=[ones(m,1),X];
-a2=sigmoid(X*Theta1');
+z2=X*Theta1';
+a2=sigmoid(z2);
 a2=[ones(m,1),a2];
-a3=sigmoid(a2*Theta2');
+z3=a2*Theta2';
+a3=sigmoid(z3);
 
+%convert y(i,1) to a vector
 temp=zeros(m,K);
 for i=1:m
-    temp(i,mod(y(m,1),10))=1;
+    temp(i,y(i,1))=1;
 end;
 y=temp;
 
-temp1=(-y.*log(a3)-(1-y).*log(1-a3));
-temp2=sum(temp1,2);
-J=sum(temp2)/m
-J=J+lambda*(sum(sum(Theta1(:,2:end).^2,2),1)+sum(sum(Theta2(:,2:end),2),1));
+cost=(-y.*log(a3)-(1-y).*log(1-a3));
+J=sum(cost(:))/m;
 
+reg=lambda*(sum(sum(Theta1(:,2:end).^2,2),1)+sum(sum(Theta2(:,2:end).^2,2),1))/(2*m);
+J=J+reg;
 
+d3=a3-y;
+d2=d3*Theta2(:,2:end).*sigmoidGradient(z2);
+%d1=d2*Theta1(:,2:end).*sigmoidGradient(z1);
 
-
-
+Theta2_grad=a3*d3;
+Theta1_grad=a2*d2;
 
 
 
