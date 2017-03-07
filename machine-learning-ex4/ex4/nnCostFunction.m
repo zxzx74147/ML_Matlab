@@ -85,12 +85,15 @@ J=sum(cost(:))/m;
 reg=lambda*(sum(sum(Theta1(:,2:end).^2,2),1)+sum(sum(Theta2(:,2:end).^2,2),1))/(2*m);
 J=J+reg;
 
-d3=a3-y;
-d2=d3*Theta2(:,2:end).*sigmoidGradient(z2);
-%d1=d2*Theta1(:,2:end).*sigmoidGradient(z1);
+d3=(a3-y);
+temp2=d3*Theta2(:,2:end);
+d2=temp2.*sigmoidGradient(z2);
 
-Theta2_grad=a3*d3;
-Theta1_grad=a2*d2;
+%reg
+p1 = (lambda/m)*[zeros(size(Theta1, 1), 1) Theta1(:, 2:end)];
+p2 = (lambda/m)*[zeros(size(Theta2, 1), 1) Theta2(:, 2:end)];
+Theta2_grad=d3'*a2./m+p2;
+Theta1_grad=d2'*X./m+p1;
 
 
 
